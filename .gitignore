@@ -142,3 +142,4 @@ cython_debug/
 
 # spark
 metastore_db/
+spark-warehouse/
