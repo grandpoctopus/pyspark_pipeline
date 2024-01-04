@@ -218,7 +218,7 @@ def write_rendered_files(
         template_dir: location of jinja templates
         settings: settings for the render job
         dry_run: whether to write the files to a temp directory
-            or if False to the spark-query src
+            or if False to the pyspark-pipeline src
         logger: for logs
     """
     if dry_run:

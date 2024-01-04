@@ -73,7 +73,7 @@ def get_snowflake_options(
     args:
         snow_flake_creds: contains sf_user and sf_password
         table_location: contains schema, database and table name
-        settings: spark-query job settings
+        settings: pyspark-pipeline job settings
     """
     message = (
         "settings file does not contain 'snowflake_settings' so "
@@ -204,7 +204,7 @@ def get_source_table_dataframe(
     spark: a spark session
     source_table: a SourceTable object with table type and location
         information
-    settings: Settings object containg spark-query job settings
+    settings: Settings object containg pyspark-pipeline job settings
     """
     if source_table.table_type == "hive":
         return read_hive_table(spark, source_table.location)
@@ -314,7 +314,7 @@ def get_source_table_dataframes(
     Use specs from source_tables to create Spark
     DataFrames
     args:
-        settings: Settings object containg spark-query job settings
+        settings: Settings object containg pyspark-pipeline job settings
     """
     source_dataframes: Dict[str, Optional[DataFrame]] = {}
     for df_name, source_table in settings.source_tables.items():

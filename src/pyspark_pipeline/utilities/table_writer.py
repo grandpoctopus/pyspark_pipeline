@@ -407,7 +407,7 @@ class TableWriter:
         spark_schema: StructType,
     ) -> DataFrame:
         """
-        Loads an existing table created with spark-query. Uses hdfs path unless
+        Loads an existing table created with pyspark-pipeline. Uses hdfs path unless
         the method is hive
 
         args:

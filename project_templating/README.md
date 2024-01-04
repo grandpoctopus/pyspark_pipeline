@@ -19,4 +19,4 @@ to run:
 
 args:
 - -s settings: path to project_settings.yaml
-- -d dry-run: if true will write to a tmp directory, if not set then will write to the appropriate locations in the spark-query module and spark-query tests directory
+- -d dry-run: if true will write to a tmp directory, if not set then will write to the appropriate locations in the pyspark-pipeline module and pyspark-pipeline tests directory

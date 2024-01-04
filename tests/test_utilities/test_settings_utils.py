@@ -228,7 +228,8 @@ def test_validate_date(input, expected):
 
 def test_get_settings(settings_obj, settings_json, expected_settings):
     settings_obj.target_path = (
-        "s3a://bucket_path/" "etl/spark-query/{table_tag}/{suffix}/{job_name}"
+        "s3a://bucket_path/"
+        "etl/pyspark-pipeline/{table_tag}/{suffix}/{job_name}"
     )
 
     args = Namespace(
@@ -301,7 +302,7 @@ def test_get_settings_with_override(
     expected.table_tag = "new_tag"
     expected.target_path = (
         "s3a://bucket_path/"
-        "etl/spark-query/new_tag/20170101_88881231/base_reg_test/"
+        "etl/pyspark-pipeline/new_tag/20170101_88881231/base_reg_test/"
     )
 
     actual = get_settings(args, settings_json)

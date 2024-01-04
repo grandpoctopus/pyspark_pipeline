@@ -11,7 +11,7 @@ snowflake_settings:
   warehouse: YOUR_WAREHOUSE
   role: YOUR_ROLE
 
-# source_table names should correspond to required dataframe arguments in the spark-query Job
+# source_table names should correspond to required dataframe arguments in the pyspark-pipeline Job
 source_tables:
   {%- for input_df, input_table in table_df_map %}
   {{ input_df }}:

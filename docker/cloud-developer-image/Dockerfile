@@ -11,12 +11,12 @@ RUN --mount=type=secret,id=artifactory_password \
     && echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update \
     && apt-get install -y kubectl \
-    && conda create -n spark-query pip python==3.8.13 \
-    && source activate spark-query \
+    && conda create -n pyspark-pipeline pip python==3.8.13 \
+    && source activate pyspark-pipeline \
     && cd /etc \
     && git config --global http.sslverify false \
     && git clone https://${GITLAB_USER}:${GITLAB_PRIVATE_TOKEN}@${GIT_URL} \
-    && cd spark-query \
+    && cd pyspark-pipeline \
     && git checkout -b ${PYSPARK_PIPELINE_BRANCH} || echo "building from master branch" \
     && git pull origin ${PYSPARK_PIPELINE_BRANCH} \
     && git remote set-url origin ${GIT_URL} \

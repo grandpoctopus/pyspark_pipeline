@@ -282,8 +282,8 @@ def get_settings_json(settings_yaml: str) -> Dict:
         except TypeError:
             raise ValueError(
                 f"Argument passed to `--settings-yaml`, '{settings_yaml}', "
-                "is neither a valid spark-query settings yaml string "
-                "nor a path to a valid spark-query settings yaml file"
+                "is neither a valid pyspark-pipeline settings yaml string "
+                "nor a path to a valid pyspark-pipeline settings yaml file"
             )
     return settings_json
 

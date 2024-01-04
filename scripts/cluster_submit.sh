@@ -9,9 +9,9 @@ Usage: bash $0
          environment but use it as-is. Otherwise, the environment will be
          rebuilt.
          (optional)
-	-f - JOB_FILE for spark-query job. (required)
-	-s - SETTINGS_FILE for spark-query job. (required)
-    -a - JOB_ARGS for the spark-query job that are passed in double quotes
+	-f - JOB_FILE for pyspark-pipeline job. (required)
+	-s - SETTINGS_FILE for pyspark-pipeline job. (required)
+    -a - JOB_ARGS for the pyspark-pipeline job that are passed in double quotes
          example: "-r t -m f"
     -m - SPARK_MASTER (options: yarn, kubernetes, emr) (optional) default is yarn
     -O - file for override_settings
@@ -117,7 +117,7 @@ then
 
     poetry install
     poetry build
-    echo y | pip uninstall spark-query
+    echo y | pip uninstall pyspark-pipeline
     pip install dist/*.whl
 fi
 
@@ -186,12 +186,12 @@ fi
 
 if [[ -z ${DRIVER_POD_LABEL} && "${SPARK_MASTER}" == "kubernetes" ]]
 then
-    export DRIVER_POD_LABEL='spark-query'
+    export DRIVER_POD_LABEL='pyspark-pipeline'
 fi
 
 if [[ -z ${K8S_NAMESPACE} && "${SPARK_MASTER}" == "kubernetes" ]]
 then
-    export K8S_NAMESPACE='spark-query'
+    export K8S_NAMESPACE='pyspark-pipeline'
 fi
 
 if [ "${SPARK_MASTER}" == "kubernetes" ];

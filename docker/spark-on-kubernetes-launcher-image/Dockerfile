@@ -4,20 +4,20 @@ ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
 RUN apt-get update && apt-get install gcc libkrb5-dev krb5-multidev git curl apt-transport-https ca-certificates zip -y
 
-WORKDIR /etc/spark-query
+WORKDIR /etc/pyspark-pipeline
 
-COPY pyproject.toml poetry.lock /etc/spark-query/
-COPY src /etc/spark-query/src
-COPY scripts /etc/spark-query/scripts
-COPY kubernetes /etc/spark-query/kubernetes
+COPY pyproject.toml poetry.lock /etc/pyspark-pipeline/
+COPY src /etc/pyspark-pipeline/src
+COPY scripts /etc/pyspark-pipeline/scripts
+COPY kubernetes /etc/pyspark-pipeline/kubernetes
 
 RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update \
     && apt-get install -y kubectl \
     && apt-get update \
-    && conda create -n spark-query pip python==3.8.13 \
-    && source activate spark-query \
+    && conda create -n pyspark-pipeline pip python==3.8.13 \
+    && source activate pyspark-pipeline \
     && pip install . \
     && conda pack \
     && pip3 --no-cache-dir install --upgrade awscli

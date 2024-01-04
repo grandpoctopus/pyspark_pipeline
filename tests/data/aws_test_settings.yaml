@@ -18,7 +18,7 @@ databases:
   source_db: "fake_source_database"
   target_db: "fake_pyspark_pipeline_database"
 
-# source_table names should correspond to required dataframe arguments in the spark-query Job
+# source_table names should correspond to required dataframe arguments in the pyspark-pipeline Job
 source_tables:
   fake_table:
     table_type: "fake_table"

@@ -5,12 +5,12 @@ ARG GIT_PRIVATE_TOKEN
 ARG GIT_URL
 ARG PYSPARK_PIPELINE_BRANCH=master
 RUN apt-get update && apt-get install vim gcc git curl apt-transport-https ca-certificates zip -y
-RUN conda create -n spark-query pip python==3.8.13 \
-    && source activate spark-query \
+RUN conda create -n pyspark-pipeline pip python==3.8.13 \
+    && source activate pyspark-pipeline \
     && cd /etc \
     && git config --global http.sslverify false \
     && git clone https://${GITLAB_USER}:${GITLAB_PRIVATE_TOKEN}@${GIT_URL} \
-    && cd spark-query \
+    && cd pyspark-pipeline \
     && git checkout -b ${PYSPARK_PIPELINE_BRANCH} || echo "building from master branch" \
     && git pull origin ${PYSPARK_PIPELINE_BRANCH} \
     && git remote set-url origin ${GIT_URL} \

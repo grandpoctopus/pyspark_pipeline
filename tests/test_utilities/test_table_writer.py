@@ -27,7 +27,7 @@ from pyspark_pipeline.utilities.table_writer import (
     TableWriter,
 )
 
-TEST_BUCKET = "spark-query-app-fake-s3"
+TEST_BUCKET = "pyspark-pipeline-app-fake-s3"
 TARGET_PATH = f"s3a://{TEST_BUCKET}/test-table-writer"
 TEST_DB_NAME = "fake_pyspark_pipeline_database"
 TEST_AWS_URL = "http://127.0.0.1:5000"

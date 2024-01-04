@@ -13,7 +13,7 @@ output_partitions: 1
 databases:
   source_db: EXT_WAREHOUSE_SCHEMA.EXT_WAREHOUSE_DB
 
-# source_table names should correspond to required dataframe arguments in the spark-query Job
+# source_table names should correspond to required dataframe arguments in the pyspark-pipeline Job
 source_tables:
   ddim_mbr_df:
      table_type: 'hive'

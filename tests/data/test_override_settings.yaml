@@ -2,7 +2,7 @@ job_name: base_reg_test
 include_start_date: 2017-01-01
 include_end_date: 8888-12-31
 suffix: '20170101_88881231'
-target_path: s3a://bucket_path/etl/spark-query/{table_tag}/{suffix}/base_reg_test/
+target_path: s3a://bucket_path/etl/pyspark-pipeline/{table_tag}/{suffix}/base_reg_test/
 hive_output_table_type: null
 spark_submit_mode: client
 output_partitions: 100
@@ -22,7 +22,7 @@ snowflake_settings:
 database_udfs:
   fake_udf: FAKE.LOCATION.super_fake_udf
 
-# source_table names should correspond to required dataframe arguments in the spark-query Job
+# source_table names should correspond to required dataframe arguments in the pyspark-pipeline Job
 source_tables:
   query_result_df:
     table_type: 'snowflake'

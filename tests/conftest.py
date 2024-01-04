@@ -121,7 +121,7 @@ def cluster_spark(settings_obj) -> SparkSession:
     set_env_vars(settings_obj.spark_environment.dict())
     os.environ["PYSPARK_DRIVER_PYTHON"] = "pyenv/bin/python"
     os.environ["PYSPARK_PYTHON"] = "pyenv/bin/python"
-    zip_path = Path(__file__).parent.parent / "spark-query.zip"
+    zip_path = Path(__file__).parent.parent / "pyspark-pipeline.zip"
     spark = (
         SparkSession.builder.master("yarn")
         .config("spark.yarn.dist.archives", f"{zip_path}#pyenv")

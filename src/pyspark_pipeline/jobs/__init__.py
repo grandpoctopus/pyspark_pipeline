@@ -16,7 +16,7 @@ from pyspark_pipeline.utilities.settings_utils import Settings
 
 class Job(ABC):
     """
-    Abstract class for excuting a series of spark-query queries
+    Abstract class for excuting a series of pyspark-pipeline queries
     """
 
     def __init__(
