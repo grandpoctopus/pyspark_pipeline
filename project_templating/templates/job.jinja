@@ -1,0 +1,83 @@
+from typing import Dict, Optional, cast
+
+from pyspark.sql import DataFrame
+
+from pyspark_pipeline.jobs import Job
+from pyspark_pipeline.queries import patients_queries, {{ query_file_name }}
+from pyspark_pipeline.schemas import patients_schema, {{ schema_file_name }}
+from pyspark_pipeline.utilities.settings_utils import (
+    NoPIISettings,
+    Settings,
+    get_incremental_date_ranges,
+)
+
+
+class {{ job_class }}(Job):
+    def __init__(
+        self,
+        settings: NoPIISettings,
+        audit_df: Optional[DataFrame],
+        {%- for input_df in input_dfs %}
+        {{ input_df }}: DataFrame,
+        {%- endfor %}
+        **kwargs,
+    ):
+        """
+        args:
+            settings: a Settings object containing hive
+                database names and table suffixes
+            audit_df: Spark DataFrame containing information about previous
+                runs of the job.
+            {%- for input_df in input_dfs %}
+            {{ input_df }}: < add description >
+            {%- endfor %}
+        """
+        super().__init__(**kwargs)
+        self.settings = cast(Settings, settings)
+        self.audit_df = audit_df
+        {%- for input_df in input_dfs %}
+        self.{{ input_df }} = {{ input_df }}
+        {%- endfor %}
+
+    def run(self) -> Dict[str, DataFrame]:
+        self.settings = get_incremental_date_ranges(
+            self.args, self.settings, self.audit_df, self.logger
+        )
+        if self.logger is not None:
+            self.logger.info("Running job with settings: %s " % self.settings)
+
+        population_df = patients_queries.PopulationQuery(
+            spark=self.spark,
+            settings=self.settings,
+            schema=patients_schema.PopulationSchema(),
+            mbr_df=self.mbr_df,
+            mdm_ppltn_xwalk_df=self.mdm_ppltn_xwalk_df,
+        ).run()
+
+        {% for output_df in output_dfs %}
+        {{ output_df['name'] }} = {{ query_file_name }}.{{ output_df['query_class'] }}(
+            spark=self.spark,
+            settings=self.settings,
+            schema={{ schema_file_name }}.{{ output_df['schema_class'] }}(),
+            {%- for input_df in output_df['input_dfs'] %}
+            {{ input_df }}=self.{{ input_df }},
+            {%- endfor %}
+        ){% if output_df['write'] == true %}.write(
+            "{{ output_df['name'].replace("_df", "") }}",
+            "parquet",
+            self.logger,
+            row_id_columns=["id"],
+            hive_table_type=self.settings.hive_output_table_type,
+            col_to_repartition_by="id_group",
+            partition_hdfs_by_col="id_group",
+            incremental_processing_type=self.settings.incremental_processing_type,
+        ){% else %}.run(){% endif %}
+        {% endfor %}
+
+        self.write_audit("{{ job_name }}_audit", self.settings)
+
+        return {
+            {%- for output_df in output_dfs %}
+            "{{ output_df.name }}": {{ output_df.name }},
+            {%- endfor %}
+        }

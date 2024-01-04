@@ -1,0 +1,53 @@
+from argparse import Namespace
+from datetime import date
+from pyspark.sql import DataFrame
+from flaky import flaky
+from pyspark_test import assert_pyspark_df_equal  # type: ignore
+
+from pyspark_pipeline.jobs.{{ job_file_name }} import {{ job_class }}
+from pyspark_pipeline.utilities.settings_utils import SourceTable
+
+
+{% for output_df in output_dfs %}
+@flaky(max_runs=3, min_passes=1)
+def test_{{ output_df['name'].replace('_df', '') }}_job(
+    local_spark,
+    settings_obj,
+    expected_audit_df,
+    {%- for input_df in input_dfs %}
+    {{ input_df }}: DataFrame,
+    {%- endfor %}
+    {%- for output_df in output_dfs %}
+    {{ output_df['name'] }}: DataFrame,
+    {%- endfor %}
+    tmpdir,
+):
+    args = Namespace()
+    args.is_regression_test = False
+    args.incremental_processing_type = None
+    args.incremental_load_start_date = str(date(1900, 1, 1))
+    args.incremental_load_end_date = str(date(2100, 1, 1))
+    settings_obj.source_tables["audit_df"] = SourceTable(
+        table_type="parquet", location=f"file:///{str(tmpdir)}"
+    )
+    actual = {{ job_class }}(
+        spark=local_spark,
+        settings=settings_obj,
+        args=args,
+        audit_df=expected_audit_df,
+        {%- for input_df in input_dfs %}
+        {{ input_df }}={{ input_df }},
+        {%- endfor %}
+    ).run()
+
+    expected_dfs = {
+        {%- for output_df in output_dfs %}
+        "{{ output_df.name }}": {{ output_df.name }},
+        {%- endfor %}
+    }
+    cols = ["id"]
+    for name, expected_df in expected_dfs.items():
+        assert_pyspark_df_equal(
+            actual[name].orderBy(cols), expected_df.orderBy(cols)
+        )
+{% endfor %}

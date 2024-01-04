@@ -1,0 +1,69 @@
+from datetime import datetime
+
+import pytest
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import (
+    ArrayType,
+    BooleanType,
+    FloatType,
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+    TimestampType,
+)
+
+
+{% for input_df in input_dfs %}
+@pytest.fixture(scope="module")
+def {{ input_df }}(
+    local_spark: SparkSession,
+    valid_timestamp: datetime,
+) -> DataFrame:
+    schema = StructType(
+        [
+            StructField("id", IntegerType(), True),
+            StructField("id_group", StringType(), True),
+        ]
+    )
+
+    {{ input_df }} = local_spark.createDataFrame(
+        [
+            (
+                1,
+                "1",
+            ),
+        ],
+        schema,
+    )
+
+    return {{ input_df }}
+{% endfor %}
+
+
+{% for output_df in output_dfs %}
+@pytest.fixture(scope="module")
+def {{ output_df['name'] }}(
+    local_spark: SparkSession,
+    valid_timestamp: datetime,
+) -> DataFrame:
+
+    schema = StructType(
+        [
+            StructField("id", IntegerType(), True),
+            StructField("id_group", StringType(), True),
+        ]
+    )
+
+    {{ output_df['name'] }} = local_spark.createDataFrame(
+        [
+            (
+                1,
+                "1",
+            ),
+        ],
+        schema,
+    )
+
+    return {{ output_df['name'] }}
+{% endfor %}

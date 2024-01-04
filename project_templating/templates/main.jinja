@@ -1,0 +1,17 @@
+from pyspark_pipeline.jobs.{{ job_file_name }} import {{ job_class }}
+from pyspark_pipeline.utilities.arg_parse_utils import parse_base_args
+from pyspark_pipeline.utilities.job_utils import job_driver
+from pyspark_pipeline.utilities.settings_utils import NoPIISettings
+
+
+def main():
+    job_driver(
+        app_name="{{ job_file_name }}.py",
+        arg_parser=parse_base_args,
+        job={{ job_class }},
+        settings_class=NoPIISettings,
+    )
+
+
+if __name__ == "__main__":
+    main()

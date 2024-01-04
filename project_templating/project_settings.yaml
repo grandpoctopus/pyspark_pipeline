@@ -1,0 +1,11 @@
+project_name: claims # name of project with spaces separating words
+input_tables: # name of project
+  - TABLE_1
+  - TABLE_2
+
+output_dfs:
+  - name: output_df_1
+    write: true
+    input_dfs:
+      - TABLE_1
+      - TABLE_2

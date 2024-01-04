@@ -1,0 +1,30 @@
+job_name: "fake_job"
+include_start_date: 1981-01-01
+include_end_date: 2020-01-01
+suffix: "19810101_20200101"
+dataset_suffix: "_fake_aws"
+lob_pop: "commercial"
+lob_short: "alllob"
+table_tag: "reg_test"
+release: "r000"
+hadoop_env: "fake_aws"
+target_path: "s3a://fake_bucket/test-table-writer"
+hive_output_table_type: "external"
+sor_column_name: cdh_sor_dtm
+spark_submit_mode: client
+output_partitions: 10
+
+databases:
+  source_db: "fake_source_database"
+  target_db: "fake_pyspark_pipeline_database"
+
+# source_table names should correspond to required dataframe arguments in the spark-query Job
+source_tables:
+  fake_table:
+    table_type: "fake_table"
+    location: "fake_location"
+
+spark_configs:
+  spark.master: "kubernetes"
+  spark.sql.shuffle.partitions: 10
+  spark.driver.cores: 1

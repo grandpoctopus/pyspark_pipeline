@@ -1,0 +1,48 @@
+job_name: base_reg_test
+include_start_date: 2017-01-01
+include_end_date: 8888-12-31
+suffix: '20170101_88881231'
+target_path: s3a://bucket_path/etl/spark-query/{table_tag}/{suffix}/base_reg_test/
+hive_output_table_type: null
+spark_submit_mode: client
+output_partitions: 100
+table_tag: tabletag
+hadoop_env: hadoopenv
+release: releasenum
+sor_column_name: sordtmcol
+
+databases:
+  source_db: EXT_WAREHOUSE_SCHEMA.EXT_WAREHOUSE_DB
+
+snowflake_settings:
+  url: snow_flake_domain.snowflakecomputing.com
+  warehouse: SF_WAREHOUSE
+  role: SF_ROLE
+
+database_udfs:
+  fake_udf: FAKE.LOCATION.super_fake_udf
+
+# source_table names should correspond to required dataframe arguments in the spark-query Job
+source_tables:
+  query_result_df:
+    table_type: 'snowflake'
+    location: '{source_db}.query_df'
+    query: SELECT {fake_udf}(some_column) FROM {location}
+
+
+spark_configs:
+  spark.executor.cores: 20
+  spark.executor.instances: 10
+  spark.executor.memory: 62g
+  spark.executor.memoryOverhead: 98g
+  spark.sql.shuffle.partitions: 1
+  spark.eventLog.enabled: true
+  spark.shuffle.service.enabled: false
+  spark.dynamicAllocation.enabled: false
+  spark.sql.session.timeZone: "UTC"
+  spark.driver.maxResultSize: 5g
+  spark.kubernetes.local.dirs.tmpfs: true
+  spark.hadoop.parquet.enable.summary-metadata: false
+  spark.sql.parquet.mergeSchema: false
+  spark.sql.parquet.filterPushdown: true
+  spark.sql.hive.metastorePartitionPruning: true

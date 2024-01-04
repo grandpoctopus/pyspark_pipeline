@@ -1,0 +1,41 @@
+from datetime import datetime
+
+import pyspark.sql.functions as F
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import (
+    IntegerType,
+    StructField,
+    StructType,
+    TimestampType,
+)
+from pyspark_test import assert_pyspark_df_equal  # type: ignore
+
+from pyspark_pipeline.queries import {{ query_file_name }}
+from pyspark_pipeline.schemas import {{ schema_file_name }}
+from pyspark_pipeline.utilities.settings_utils import Settings
+
+{% for output_df in output_dfs %}
+def test_{{ output_df['name'].replace('_df', '') }}_query(
+    local_spark: SparkSession,
+    settings_obj: Settings,
+    {%- for input_df in output_df['input_dfs'] %}
+    {{ input_df }}: DataFrame,
+    {%- endfor %}
+    {{ output_df['name'] }}: DataFrame,
+):
+    actual = {{ query_file_name }}.{{ output_df['query_class'] }}(
+        spark=local_spark,
+        schema={{ schema_file_name }}.{{ output_df['schema_class'] }}(),
+        settings=settings_obj,
+        {%- for input_df in output_df['input_dfs'] %}
+        {{ input_df }}={{ input_df }},
+        {%- endfor %}
+    ).run()
+
+    columns = ["id"]
+
+    assert_pyspark_df_equal(
+        actual.orderBy(*columns),
+        {{ output_df['name'] }}.orderBy(*columns),
+    )
+{% endfor %}

@@ -1,0 +1,58 @@
+[tool.poetry]
+authors = ["Jeff Halley <jeff.halley@gmail.com>"]
+description = "pyspark-based etl utilities"
+name = "pyspark_pipeline"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<3.9"
+numpy = "1.20.2"
+pyspark-test = "0.1.0"
+pyaml = "^21.10.1"
+pydantic = "1.7.3"
+pandas = "1.2.2"
+importlib-resources = ">=3.3.0"
+findspark = "1.4.2"
+pytest-xdist = "2.1.0"
+pyspark = "3.1.2"
+pandas-stubs = "1.1.0.1"
+flaky = "^3.7.0"
+freezegun = "^1.1.0"
+pyarrow = "^4.0.1"
+conda-pack = "^0.6.0"
+boto3 = "^1.24.64"
+Jinja2 = "^3.1.2"
+isort = "5.11.5"
+pytest-clarity = "^1.0.1"
+
+[tool.poetry.dev-dependencies]
+black = "22.6.0" # keep synced with .pre-commit-config.yaml
+coverage = "^5.2.1"
+flake8 = "5.0.4" # keep synced with .pre-commit-config.yaml
+isort = "5.11.5" # keep synced with .pre-commit-config.yaml
+mypy = "0.782" # keep synced with .pre-commit-config.yaml
+pre-commit = "^2.7.1"
+pytest = "^6.0.2"
+pytest-coverage = "^0.0"
+tox = "^3.20.0"
+s3 = "^3.0.0"
+Flask = "2.1.3"
+moto = "4.0.5"
+
+[tool.black]
+line-length = 80
+target-version = ['py37']
+
+[tool.isort]
+# Based on black-compatible configs.
+# See here: https://github.com/psf/black/blob/master/docs/compatible_configs.md
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 80
+multi_line_output = 3
+use_parentheses = true
+
+[build-system]
+build-backend = "poetry.masonry.api"
+requires = ["poetry>=0.12"]

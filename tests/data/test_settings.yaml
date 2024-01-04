@@ -1,0 +1,28 @@
+job_name: test_settings
+include_start_date: 2016-08-15
+include_end_date: 2021-08-15
+suffix: '20160815_20210815'
+table_tag: tabletag
+hadoop_env: hadoopenv
+release: releasenum
+target_path: hdfs://nameservice{hadoop_env}2//hdfs_path/targ
+hive_output_table_type: "external"
+sor_column_name: sordtmcol
+output_partitions: 1
+
+databases:
+  source_db: EXT_WAREHOUSE_SCHEMA.EXT_WAREHOUSE_DB
+
+# source_table names should correspond to required dataframe arguments in the spark-query Job
+source_tables:
+  ddim_mbr_df:
+     table_type: 'hive'
+     location: '{source_db}.ddim_mbr{dataset_suffix}'
+  audit_df:
+    table_type: 'hive'
+    location: '{target_db}.{job_name}_audit_{table_tag}_{lob_short}_{suffix}'
+
+spark_configs:
+  spark.master: "yarn"
+  spark.sql.shuffle.partitions: 1000
+  spark.default.parallelism: 2000

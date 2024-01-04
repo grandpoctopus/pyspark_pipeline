@@ -1,0 +1,6 @@
+from pyspark_pipeline.schemas import EtlSchema
+
+{% for output_df in output_dfs %}
+class {{ output_df['schema_class'] }}(EtlSchema):
+    raise NotImplementedError
+{% endfor %}

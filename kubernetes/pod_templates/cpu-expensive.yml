@@ -1,0 +1,26 @@
+spec:
+  # makes mounted pvcs accessible by spark execs
+  # the values with `/data` and `spark-local-dir-1` must match
+  # the values in the job settings file
+  # spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.mount.path:
+  initContainers:
+      - name: permission-init
+        image: alpine:3.16.0
+        command:
+        - sh
+        - -c
+        - (chmod 777 /data)
+        volumeMounts:
+          - name: spark-local-dir-1
+            mountPath: /data
+  nodeSelector:
+    nodegroup: cpu-expensive
+  tolerations:
+  - key: nodegroup
+    value: cpu-expensive
+    operator: Equal
+    effect: NoSchedule
+  - key: admin-token
+    value: < token >
+    operator: Equal
+    effect: NoSchedule

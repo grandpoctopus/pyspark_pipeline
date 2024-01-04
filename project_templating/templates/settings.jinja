@@ -1,0 +1,37 @@
+job_name: {{ project_name }}
+output_partitions: 30000
+bins_per_partition: 100
+
+databases:
+  source_db: SOURCE_SCHEMA.SOURCE_DATABASE
+  target_db: TARGET_SCHEMA.TARGET_DATABASE
+
+snowflake_settings:
+  url: snowflake_url.privatelink.snowflakecomputing.com
+  warehouse: YOUR_WAREHOUSE
+  role: YOUR_ROLE
+
+# source_table names should correspond to required dataframe arguments in the spark-query Job
+source_tables:
+  {%- for input_df, input_table in table_df_map %}
+  {{ input_df }}:
+    table_type: 'snowflake'
+    location: '{ext_warehouse_db}.{{ input_table }}'
+  {%- endfor %}
+
+spark_configs:
+  spark.dynamicAllocation.maxExecutors: 120
+  spark.executor.cores: 10
+  spark.executor.memory: 72g
+  spark.executor.memoryOverhead: 8g
+  spark.sql.shuffle.partitions: 9600
+  # pvc
+  spark.kubernetes.executor.volumes.persistentVolumeClaim.spark-local-dir-1.options.sizeLimit: 250Gi
+  # settings for network issues when using > 40 workers
+  spark.storage.blockManagerHeartBeatMs: 60000
+  spark.dynamicAllocation.executorIdleTimeout: 600s
+  spark.excludeOnFailure.enabled: true
+  spark.reducer.maxReqsInFlight: 25
+  spark.shuffle.io.retryWait: 15s
+  spark.shuffle.io.maxRetries: 100
+  spark.shuffle.io.backLog: 8192

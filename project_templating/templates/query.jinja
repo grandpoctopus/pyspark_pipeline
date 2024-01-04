@@ -1,0 +1,51 @@
+from typing import List, cast
+
+import pyspark.sql.functions as F
+from pyspark.sql import DataFrame, Window
+
+from pyspark_pipeline.queries import Query
+
+from pyspark_pipeline.schemas import {{ schema_file_name }}
+from pyspark_pipeline.utilities.query_utils import (
+    aggregate_rows_by_collect_list,
+    format_ts_column_as_iso_string,
+    get_group_by_cols,
+    get_id_group_col,
+    get_rows_stored_in_date_range,
+    validate_code,
+)
+from pyspark_pipeline.utilities.settings_utils import Settings
+
+{% for output_df in output_dfs %}
+class {{ output_df['query_class'] }}(Query):
+    """
+    < add description >
+    """
+
+    def __init__(
+        self,
+        {%- for input_df in output_df['input_dfs'] %}
+        {{ input_df }}: DataFrame,
+        {%- endfor %}
+        **kwargs,
+    ):
+        """
+        args:
+            schema: < add description ?
+            {%- for input_df in output_df['input_dfs'] %}
+            {{ input_df }}: < add description >
+            {%- endfor %}
+        """
+        {%- for input_df in output_df['input_dfs'] %}
+        self.{{ input_df }} = {{ input_df }}
+        {%- endfor %}
+        super().__init__(**kwargs)
+        self.schema = cast({{ schema_file_name }}.{{ output_df['schema_class'] }}, self.schema)
+
+    def run(self) -> DataFrame:
+        {% if output_df['write'] == true %}
+        {{ output_df['name'] }} = get_id_group_col({{ output_df['name'] }}, self.settings)
+        {{ output_df['name'] }} = {{ output_df['name'] }}.withColumn("type", F.lit("{{ project_name }}"))
+        {% endif %}
+        return {{ output_df['name'] }}.select(self.schema.get_columns_list())
+{% endfor %}
