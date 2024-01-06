@@ -1,5 +1,5 @@
 [tool.poetry]
-authors = ["Jeff Halley <jeff.halley@gmail.com>"]
+authors = ["Jeff <grandpoctopus@gmail.com>"]
 description = "pyspark-based etl utilities"
 name = "pyspark_pipeline"
 version = "0.1.0"
