@@ -5,6 +5,13 @@ pyspark-pipeline is Python package for Pypark-based ETL pipelines.
 # Overview:
 pyspark-pipeline is designed to allow users to write easily testable and modular ETL pipelines. pyspark-pipeline allows for flexible configuration through a settings yaml to use tables/dataframes from different sources (local, hadoop, snowflake, and AWS etc) without changing query code. It also allows for unit testing at the job, query, and subquery levels.
 
+# Building local-dev image
+1. Install docker
+2. From the pyspark-pipeline directory (the same one containing this README) Run
+```
+docker build -t pyspark-pipeline:latest -f docker/local-developer-image/Dockerfile .
+```
+
 ## Extracting source tables as DataFrames with job_driver
 Settings yaml files, see `pyspark_pipeline/settings/sample_settings.yaml` for examples, define the locations and formats
 of the source tables. Source tables can be in either Hive, SnowFlake or an object store like
