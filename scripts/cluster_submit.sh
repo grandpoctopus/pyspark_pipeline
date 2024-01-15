@@ -19,8 +19,6 @@ EOF
 }
 
 echo "CONDA_DEFAULT_ENV: $CONDA_DEFAULT_ENV"
-echo "PACKAGE_REPO_USER: $PACKAGE_REPO_USER"
-echo "PACKAGE_REPO_URL: $PACKAGE_REPO_URL"
 
 if [[ -z ${CONDA_DEFAULT_ENV} || "${CONDA_DEFAULT_ENV}" == "base" ]]
 then
@@ -85,21 +83,15 @@ fi
 
 if [[ -z "${USE_EXISTING_CONDA_ENV}" ]]
 then
-    if [[ -z ${PACKAGE_REPO_USER} || -z ${PACKAGE_REPO_PASS} || -z ${PACKAGE_REPO_URL} ]]
-    then
-        echo "Environment variables must be defined for credentials and URL to reach the PI package repo"
-        echo "  * PACKAGE_REPO_USER"
-        echo "  * PACKAGE_REPO_PASS"
-        echo "  * PACKAGE_REPO_URL"
-        exit 1
-    fi
+
     _OLD_CONDA_ENV=$CONDA_DEFAULT_ENV
     eval "$(conda shell.bash hook)"
     conda deactivate
+    source deactivate
     conda env remove -n $_OLD_CONDA_ENV
     rm -f "${_OLD_CONDA_ENV}.tar.gz"
     eval "$(conda shell.bash hook)"
-    echo y | conda create -n $_OLD_CONDA_ENV python=3.7.7
+    echo y | conda create -n $_OLD_CONDA_ENV python=3.8.13
     conda activate $_OLD_CONDA_ENV
     if [[ "${PURGE_ALL_CACHES}" == "T" ]]
     then
@@ -115,9 +107,13 @@ then
         conda install -y poetry==1.1.14 -c conda-forge
     fi
 
+    # poetry installs cannot be conda-packed because
+    # they are editable packages, this uses poetry
+    # to build the whl and pip install from that
     poetry install
     poetry build
     echo y | pip uninstall pyspark-pipeline
+
     pip install dist/*.whl
 fi
 
